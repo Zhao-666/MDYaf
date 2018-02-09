@@ -17,6 +17,25 @@ class UserModel
         $this->_db = new PDO("mysql:host=127.0.0.1;dbname=imooc;", "root", "root");
     }
 
+    public function login($uname, $pwd)
+    {
+        $query = $this->_db->prepare("select `pwd`,`id` from `user` where `name`= ? ");
+        $query->execute(array($uname));
+        $ret = $query->fetchAll();
+        if (!$ret || count($ret) != 1) {
+            $this->errno = -1003;
+            $this->errmsg = "用户查找失败";
+            return false;
+        }
+        $userInfo = $ret[0];
+        if ($this->_password_generate($pwd) != $userInfo['pwd']) {
+            $this->errno = -1004;
+            $this->errmsg = "密码错误";
+            return false;
+        }
+        return intval($userInfo[1]);
+    }
+
     public function register($uname, $pwd)
     {
         $query = $this->_db->prepare("select count(*) as c from `user` where `name`= ? ");
