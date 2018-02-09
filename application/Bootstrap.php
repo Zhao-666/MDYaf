@@ -25,10 +25,10 @@ class Bootstrap extends Yaf_Bootstrap_Abstract {
 		//在这里注册自己的路由协议,默认使用简单路由
         $router = $dispatcher::getInstance()->getRouter();
         $route = new Yaf_Route_Rewrite(
-            '/user/reg/:username',
+            '/user/register',
             array(
                 'controller'=>'user',
-                'action'=>'reg'
+                'action'=>'register'
             )
         );
         //使用路由器装载路由协议

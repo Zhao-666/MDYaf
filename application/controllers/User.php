@@ -8,26 +8,35 @@
 
 class UserController extends Yaf_Controller_Abstract
 {
-
-    /**
-     * 默认动作
-     * Yaf支持直接把Yaf_Request_Abstract::getParam()得到的同名参数作为Action的形参
-     * 对于如下的例子, 当访问http://yourhost/imooc/index/index/index/name/root 的时候, 你就会发现不同
-     */
-    public function regAction($name = "User Reg")
+    public function indexAction()
     {
-        //1. fetch query
-        $get = $this->getRequest()->getQuery("get", "default value");
 
-        //2. fetch model
-        $model = new SampleModel();
+    }
 
-        var_dump($name);
-        //3. assign
-        $this->getView()->assign("content", $model->selectSample());
-        $this->getView()->assign("name", $name);
+    public function registerAction()
+    {
+        // 获取参数
+        $uname = $this->getRequest()->getPost("uname", false);
+        $pwd = $this->getRequest()->getPost("pwd", false);
+        if (!$uname || !$pwd) {
+            echo json_encode(array("errno" => -1002, "errmsg" => "用户名与密码必须传递"));
+            return FALSE;
+        }
 
-        //4. render by Yaf, 如果这里返回FALSE, Yaf将不会调用自动视图引擎Render模板
-        return false;
+        // 调用Model，做登录验证
+        $model = new UserModel();
+        if ($model->register(trim($uname), trim($pwd))) {
+            echo json_encode(array(
+                "errno" => 0,
+                "errmsg" => "",
+                "data" => array("name" => $uname)
+            ));
+        } else {
+            echo json_encode(array(
+                "errno" => $model->errno,
+                "errmsg" => $model->errmsg,
+            ));
+        }
+        return FALSE;
     }
 }
