@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @name Bootstrap
  * @author root
@@ -7,22 +8,26 @@
  * 这些方法, 都接受一个参数:Yaf_Dispatcher $dispatcher
  * 调用的次序, 和申明的次序相同
  */
-class Bootstrap extends Yaf_Bootstrap_Abstract {
+class Bootstrap extends Yaf_Bootstrap_Abstract
+{
 
-    public function _initConfig() {
-		//把配置保存起来
-		$arrConfig = Yaf_Application::app()->getConfig();
-		Yaf_Registry::set('config', $arrConfig);
-	}
+    public function _initConfig()
+    {
+        //把配置保存起来
+        $arrConfig = Yaf_Application::app()->getConfig();
+        Yaf_Registry::set('config', $arrConfig);
+    }
 
-	public function _initPlugin(Yaf_Dispatcher $dispatcher) {
-		//注册一个插件
-		$objSamplePlugin = new SamplePlugin();
-		$dispatcher->registerPlugin($objSamplePlugin);
-	}
+    public function _initPlugin(Yaf_Dispatcher $dispatcher)
+    {
+        //注册一个插件
+        $objSamplePlugin = new SamplePlugin();
+        $dispatcher->registerPlugin($objSamplePlugin);
+    }
 
-	public function _initRoute(Yaf_Dispatcher $dispatcher) {
-		//在这里注册自己的路由协议,默认使用简单路由
+    public function _initRoute(Yaf_Dispatcher $dispatcher)
+    {
+        //在这里注册自己的路由协议,默认使用简单路由
 //        $router = $dispatcher::getInstance()->getRouter();
 //        $route = new Yaf_Route_Rewrite(
 //            '/user/register',
@@ -33,9 +38,13 @@ class Bootstrap extends Yaf_Bootstrap_Abstract {
 //        );
 //        //使用路由器装载路由协议
 //        $router->addRoute('product', $route);
-	}
+//        $route = new Yaf_Route_Simple("m", "c", "a");
+//        $router = Yaf_Dispatcher::getInstance()->getRouter();
+//        $router->addRoute("name", $route);
+    }
 
-	public function _initView(Yaf_Dispatcher $dispatcher) {
-		//在这里注册自己的view控制器，例如smarty,firekylin
-	}
+    public function _initView(Yaf_Dispatcher $dispatcher)
+    {
+        //在这里注册自己的view控制器，例如smarty,firekylin
+    }
 }
