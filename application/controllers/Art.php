@@ -96,57 +96,74 @@ class ArtController extends Yaf_Controller_Abstract
         return TRUE;
     }
 
-    public function statusAction(){
-        if( !$this->_isAdmin() ) {
-            echo json_encode( array("errno"=>-2000, "errmsg"=>"需要管理员权限才可以操作") );
+    public function statusAction()
+    {
+        if (!$this->_isAdmin()) {
+            echo json_encode(array("errno" => -2000, "errmsg" => "需要管理员权限才可以操作"));
             return FALSE;
         }
 
-        $artId = $this->getRequest()->getQuery( "artId", "0" );
-        $status = $this->getRequest()->getQuery( "status", "offline" );
+        $artId = $this->getRequest()->getQuery("artId", "0");
+        $status = $this->getRequest()->getQuery("status", "offline");
 
-        if( is_numeric($artId) && $artId ) {
+        if (is_numeric($artId) && $artId) {
             $model = new ArtModel();
-            if( $model->status( $artId, $status ) ) {
-                echo json_encode( array(
-                    "errno"=>0,
-                    "errmsg"=>"",
+            if ($model->status($artId, $status)) {
+                echo json_encode(array(
+                    "errno" => 0,
+                    "errmsg" => "",
                 ));
             } else {
-                echo json_encode( array(
-                    "errno"=>$model->errno,
-                    "errmsg"=>$model->errmsg,
+                echo json_encode(array(
+                    "errno" => $model->errno,
+                    "errmsg" => $model->errmsg,
                 ));
             }
         } else {
-            echo json_encode( array("errno"=>-2003, "errmsg"=>"缺少必要的文章标题参数") );
+            echo json_encode(array("errno" => -2003, "errmsg" => "缺少必要的文章标题参数"));
         }
         return TRUE;
     }
 
-    public function getAction(){
-        $artId = $this->getRequest()->getQuery( "artId", "0" );
+    public function getAction()
+    {
+        $artId = $this->getRequest()->getQuery("artId", "0");
 
-        if( is_numeric($artId) && $artId ) {
+        if (is_numeric($artId) && $artId) {
             $model = new ArtModel();
-            if( $data=$model->get( $artId ) ) {
-                echo json_encode( array(
-                    "errno"=>0,
-                    "errmsg"=>"",
-                    "data"=>$data,
+            if ($data = $model->get($artId)) {
+                echo json_encode(array(
+                    "errno" => 0,
+                    "errmsg" => "",
+                    "data" => $data,
                 ));
             } else {
-                echo json_encode( array("errno"=>-2009, "errmsg"=>"获取文章信息失败") );
+                echo json_encode(array("errno" => -2009, "errmsg" => "获取文章信息失败"));
             }
         } else {
-            echo json_encode( array("errno"=>-2003, "errmsg"=>"缺少必要的文章ID参数") );
+            echo json_encode(array("errno" => -2003, "errmsg" => "缺少必要的文章ID参数"));
         }
         return TRUE;
     }
 
     public function listAction()
     {
-        return true;
+        $pageNo = $this->getRequest()->getQuery("pageNo", "0");
+        $pageSize = $this->getRequest()->getQuery("pageSize", "10");
+        $cate = $this->getRequest()->getQuery("cate", "0");
+        $status = $this->getRequest()->getQuery("status", "online");
+
+        $model = new ArtModel();
+        if ($data = $model->lists($pageNo, $pageSize, $cate, $status)) {
+            echo json_encode(array(
+                "errno" => 0,
+                "errmsg" => "",
+                "data" => $data,
+            ));
+        } else {
+            echo json_encode(array("errno" => -2012, "errmsg" => "获取文章列表失败"));
+        }
+        return TRUE;
     }
 
     private function isAdmin()
