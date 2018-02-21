@@ -75,8 +75,13 @@ class WxpayController extends Yaf_Controller_Abstract
         return TRUE;
     }
 
-    public function callbackAction()
-    {
-
+    public function callbackAction(){
+        $model = new WxpayModel();
+        $model->callback();
+        echo json_encode( array(
+            "errno"=>0,
+            "errmsg"=>"",
+        ));
+        return TRUE;
     }
 }
