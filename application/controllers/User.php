@@ -10,7 +10,7 @@ class UserController extends Yaf_Controller_Abstract
 {
     public function indexAction()
     {
-
+        echo phpinfo();
     }
 
     public function loginAction()
@@ -49,7 +49,7 @@ class UserController extends Yaf_Controller_Abstract
                 "errmsg" => $model->errmsg,
             ));
         }
-        return TRUE;
+        return FALSE;
     }
 
     public function registerAction()
