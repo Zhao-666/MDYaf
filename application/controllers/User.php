@@ -51,18 +51,14 @@ class UserController extends Yaf_Controller_Abstract
         $uname = $this->getRequest()->getPost("uname", false);
         $pwd = $this->getRequest()->getPost("pwd", false);
         if (!$uname || !$pwd) {
-            echo json_encode(array("errno" => -1002, "errmsg" => "用户名与密码必须传递"));
+            echo json_encode(Err_Map::get(1002));
             return FALSE;
         }
 
         // 调用Model，做登录验证
         $model = new UserModel();
         if ($model->register(trim($uname), trim($pwd))) {
-            echo json_encode(array(
-                "errno" => 0,
-                "errmsg" => "",
-                "data" => array("name" => $uname)
-            ));
+            echo Common_Request::response(0, '', ['name' => $uname]);
         } else {
             echo json_encode(array(
                 "errno" => $model->errno,

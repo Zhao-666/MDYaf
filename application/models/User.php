@@ -26,8 +26,7 @@ class UserModel
             return false;
         }
         if ($this->_password_generate($pwd) != $userInfo['pwd']) {
-            $this->errno = -1004;
-            $this->errmsg = "密码错误";
+            list($this->errno, $this->errmsg) = Err_Map::get(1004);
             return false;
         }
         return intval($userInfo[1]);
@@ -41,8 +40,7 @@ class UserModel
             return false;
         }
         if (strlen($pwd) < 8) {
-            $this->errno = -1006;
-            $this->errmsg = "密码太短，请设置至少8位的密码";
+            list($this->errno, $this->errmsg) = Err_Map::get(1006);
             return false;
         } else {
             $password = $this->_password_generate($pwd);
