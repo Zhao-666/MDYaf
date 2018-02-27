@@ -47,23 +47,30 @@ class WxpayModel extends WxPayNotify
         /**
          * 创建bill
          */
-        $query = $this->_db->prepare("insert into `bill` (`itemid`,`uid`,`price`,`status`) VALUES ( ?, ?, ?, 'unpaid') ");
-        $ret = $query->execute(array($itemId, $uid, intval($item['price'])));
-        if (!$ret) {
-            $this->errno = -6006;
-            $this->errmsg = "创建账单失败";
-            return false;
-        }
+        try {
+            $this->_db->beginTransaction();
+            $query = $this->_db->prepare("insert into `bill` (`itemid`,`uid`,`price`,`status`) VALUES ( ?, ?, ?, 'unpaid') ");
+            $ret = $query->execute(array($itemId, $uid, intval($item['price'])));
+            if (!$ret) {
+                $this->errno = -6006;
+                $this->errmsg = "创建账单失败";
+                throw new PDOException('创建账单失败');
+            }
 
-        /**
-         * 成功创建账单后，需要扣去商品库存1件
-         * TODO 此处应用用事务
-         */
-        $query = $this->_db->prepare("update `item` set `stock`=`stock`-1 where `id`= ? ");
-        $ret = $query->execute(array($itemId));
-        if (!$ret) {
-            $this->errno = -6007;
-            $this->errmsg = "更新库存失败";
+            /**
+             * 成功创建账单后，需要扣去商品库存1件
+             * TODO 此处应用事务
+             */
+            $query = $this->_db->prepare("update `item` set `stock`=`stock`-1 where `id`= ? ");
+            $ret = $query->execute(array($itemId));
+            if (!$ret) {
+                $this->errno = -6007;
+                $this->errmsg = "更新库存失败";
+                throw new PDOException('更新库存失败');
+            }
+            $this->_db->commit();
+        } catch (PDOException $e) {
+            $this->_db->rollBack();
             return false;
         }
 
